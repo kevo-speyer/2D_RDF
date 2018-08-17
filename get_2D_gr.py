@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/python python
 #Get velocity of a droplet as a function of time, from 'film_xmol' file
 
 def old_main(): # main_script
@@ -287,7 +287,7 @@ def main():
     # Loop over all the simulations and get statistics for g(r):
     n_fr_tot = 0
     for run_nr in range( first_run, last_run + 1 ):
-        for i_frame in range(1,n_frames+2):
+        for i_frame in range(1, n_frames + 1 ):
             n_fr_tot += 1
             r0 = read_conf_brush(i_frame, n_liq, n_brush, run_nr)
             g_r_tmp = calc_gr(n_bins, r_bin, z1, z2, Lx, Ly,r0, n_brush) # Fortran enginge is summoned
