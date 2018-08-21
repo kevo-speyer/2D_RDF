@@ -254,6 +254,7 @@ def read_conf_brush(frame_nr, n_liq, n_brush, run_nr):
         x = _split(linecache.getline(file_tgt, i))[1:4]
         x = np.array(x, dtype='|S16')
         x = x.astype(np.float)
+	#print i, x
         x0[:,j] = x[:]
         j+=1
 
@@ -282,12 +283,12 @@ def main():
     z1 = Lz/2. - delta_z / 2.0
     z2 = Lz/2. + delta_z / 2.0 
     n_bins = int( .5 * np.sqrt( np.square(Lx) + np.square(Ly) ) / r_bin ) + 1
-    g_r = np.zeros(n_bins)    
+    g_r = np.zeros(n_bins+1)    
    
     # Loop over all the simulations and get statistics for g(r):
     n_fr_tot = 0
     for run_nr in range( first_run, last_run + 1 ):
-        for i_frame in range(1, n_frames + 1 ):
+        for i_frame in range(1,n_frames+1):
             n_fr_tot += 1
             r0 = read_conf_brush(i_frame, n_liq, n_brush, run_nr)
             g_r_tmp = calc_gr(n_bins, r_bin, z1, z2, Lx, Ly,r0, n_brush) # Fortran enginge is summoned
@@ -295,14 +296,19 @@ def main():
 
     # Get mean value of g(r)
     g_r = g_r / float(n_fr_tot)
+    #graf_dens = 80. / (2. * Lx * Ly)  
+    #g_r = g_r / float(graf_dens)
     
-    save_results("2D_gr.mide",g_r, n_bins, r_bin)
+    save_results("2D_gr.mide",g_r, n_bins, r_bin,.5*min(Lx,Ly))
 
-def save_results(name, vector, dim, delta_x):
+def save_results(name, vector, dim, delta_x, x_max):
 
     f = open(name, 'w+')
 
     for i in range (dim):
+	x = delta_x * float(i)
+	if x > x_max :
+	    break
         s = str( str( delta_x * float(i) ) + " " + str(vector[i]) + '\n')
         f.write(s)
 
